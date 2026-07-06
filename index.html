@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ServiceNow Go-Live Countdown</title>
+    <style>
+        /* Importing DS-Digital for the classic 7-segment display with distinct breaks */
+        @import url('https://fonts.cdnfonts.com/css/ds-digital');
+
+        body { 
+            margin: 0; 
+            background-color: #000; 
+            overflow: hidden; 
+        }
+        .dashboard { 
+            width: 100vw; 
+            height: 100vh; 
+            background-image: url('dashboard-bg.png'); 
+            background-size: contain; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            position: relative; 
+        }
+        .countdown { 
+            display: flex; 
+            position: absolute;
+            top: 38%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            gap: 0.5vw; 
+            align-items: center; 
+        }
+        .segment { 
+            /* Applying the DS-Digital font */
+            font-family: 'DS-Digital', sans-serif; 
+            color: #17b75f; 
+            font-size: 9.2vh; 
+            text-align: center; 
+            text-shadow: 0 0 10px rgba(23, 183, 95, 0.8);
+            letter-spacing: 2px; 
+        }
+        .colons { 
+            font-family: 'DS-Digital', sans-serif;
+            font-size: 8.5vh; 
+            padding-bottom: 1.5vh; 
+            animation: blink 1s step-start infinite;
+        }
+        
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="countdown">
+            <div id="days" class="segment">0</div>
+            <div class="segment colons">:</div>
+            <div id="hours" class="segment">00</div>
+            <div class="segment colons">:</div>
+            <div id="minutes" class="segment">00</div>
+            <div class="segment colons">:</div>
+            <div id="seconds" class="segment">00</div>
+        </div>
+    </div>
+
+    <script>
+        // Locked precisely to September 20, 2026, 8:00 AM US Central Time (UTC-5)
+        const targetDate = new Date("2026-09-20T08:00:00-05:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = String(days);
+                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            } else {
+                document.getElementById("days").innerText = "0";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); 
+    </script>
+</body>
+</html>
